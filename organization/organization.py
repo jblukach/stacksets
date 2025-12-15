@@ -18,7 +18,7 @@ def handler(event, context):
     f.write('    Properties:\n')
     f.write('      Name: /organization/id\n')
     f.write('      Type: String\n')
-    f.write('      Value: '+ organization['Organization']['Id']+'\n')
+    f.write('      Value: '+organization['Organization']['Id']+'\n')
     f.write('      Tier: Standard\n')
 
     paginator = client.get_paginator('list_accounts')
@@ -32,7 +32,7 @@ def handler(event, context):
         f.write('    Properties:\n')
         f.write('      Name: /account/'+account['Name']+'\n')
         f.write('      Type: String\n')
-        f.write('      Value: '+account['Id']+'\n')
+        f.write('      Value: "'+account['Id']+'"\n')
         f.write('      Tier: Standard\n')
 
     f.close()
