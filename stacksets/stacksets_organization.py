@@ -6,7 +6,8 @@ from aws_cdk import (
     aws_events_targets as _targets,
     aws_iam as _iam,
     aws_lambda as _lambda,
-    aws_logs as _logs
+    aws_logs as _logs,
+    aws_s3 as _s3
 )
 
 from constructs import Construct
@@ -15,6 +16,13 @@ class StacksetsOrganization(Stack):
 
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
+
+    ### S3 BUCKET ###
+
+        bucket = _s3.Bucket.from_bucket_name(
+            self, 'bucket',
+            bucket_name = 'stacksets-deployment-lukach-io'
+        )
 
     ### IAM ROLE ###
 
@@ -37,7 +45,7 @@ class StacksetsOrganization(Stack):
                     's3:PutObject'
                 ],
                 resources = [
-                    'arn:aws:s3:::stacksets-deployment-lukach-io/*'
+                    bucket.arn_for_objects('*')
                 ]
             )
         )
@@ -64,7 +72,7 @@ class StacksetsOrganization(Stack):
             timeout = Duration.seconds(900),
             handler = 'organization.handler',
             environment = dict(
-                S3_BUCKET = 'stacksets-deployment-lukach-io'
+                S3_BUCKET = bucket.bucket_name
             ),
             memory_size = 256,
             role = role
