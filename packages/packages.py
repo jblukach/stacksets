@@ -37,11 +37,39 @@ def handler(event, context):
                         os.path.join('/tmp', package))
                     )
 
-        s3 = boto3.resource('s3')
+    ### USE1 ###
+
+        s3 = boto3.resource('s3', region_name = 'us-east-1')
 
         s3.meta.client.upload_file(
             '/tmp/'+package+'.zip',
-            os.environ['S3_BUCKET'],
+            os.environ['USE1'],
+            package+'.zip',
+            ExtraArgs = {
+                'ContentType': "application/zip"
+            }
+        )
+
+    ### USE2 ###
+
+        s3 = boto3.resource('s3', region_name = 'us-east-2')
+
+        s3.meta.client.upload_file(
+            '/tmp/'+package+'.zip',
+            os.environ['USE2'],
+            package+'.zip',
+            ExtraArgs = {
+                'ContentType': "application/zip"
+            }
+        )
+
+    ### USW2 ###
+
+        s3 = boto3.resource('s3', region_name = 'us-west-2')
+
+        s3.meta.client.upload_file(
+            '/tmp/'+package+'.zip',
+            os.environ['USW2'],
             package+'.zip',
             ExtraArgs = {
                 'ContentType': "application/zip"

@@ -22,12 +22,23 @@ class StacksetsPackages(Stack):
 
         year = datetime.datetime.now().strftime('%Y')
         month = datetime.datetime.now().strftime('%m')
+        day = datetime.datetime.now().strftime('%d')
 
-    ### S3 BUCKET ###
+    ### BUCKETS ###
 
-        bucket = _s3.Bucket.from_bucket_name(
-            self, 'bucket',
-            bucket_name = 'stacksets-deployment-lukach-io'
+        use1bucket = _s3.Bucket.from_bucket_name(
+            self, 'use1',
+            bucket_name = 'packages-use1-lukach-io'
+        )
+
+        use2bucket = _s3.Bucket.from_bucket_name(
+            self, 'use2',
+            bucket_name = 'packages-use2-lukach-io'
+        )
+
+        usw2bucket = _s3.Bucket.from_bucket_name(
+            self, 'usw2',
+            bucket_name = 'packages-usw2-lukach-io'
         )
     
     ### LAMBDA LAYER ###
@@ -35,9 +46,9 @@ class StacksetsPackages(Stack):
         pip = _lambda.LayerVersion(
             self, 'pip',
             layer_version_name = 'pip',
-            description = str(year)+'-'+str(month),
+            description = str(year)+'-'+str(month)+'-'+str(day)+' deployment',
             code = _lambda.Code.from_bucket(
-                bucket = bucket,
+                bucket = use2bucket,
                 key = 'pip.zip'
             ),
             compatible_architectures = [
@@ -70,7 +81,9 @@ class StacksetsPackages(Stack):
                     's3:PutObject'
                 ],
                 resources = [
-                    bucket.arn_for_objects('*')
+                    use1bucket.arn_for_objects('*'),
+                    use2bucket.arn_for_objects('*'),
+                    usw2bucket.arn_for_objects('*')
                 ]
             )
         )
@@ -84,9 +97,11 @@ class StacksetsPackages(Stack):
             code = _lambda.Code.from_asset('packages'),
             handler = 'packages.handler',
             environment = dict(
-                S3_BUCKET = bucket.bucket_name
+                USE1 = use1bucket.bucket_name,
+                USE2 = use2bucket.bucket_name,
+                USW2 = usw2bucket.bucket_name
             ),
-            ephemeral_storage_size = Size.gibibytes(1),
+            ephemeral_storage_size = Size.gibibytes(2),
             timeout = Duration.seconds(900),
             memory_size = 2048,
             role = role,
