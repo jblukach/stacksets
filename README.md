@@ -1,8 +1,8 @@
 # stacksets
 
-This repository manages the distribution of Python packages and CloudFormation StackSets used across the AWS Organization.
+This repository manages the distribution of Python Packages and CloudFormation StackSets used across the AWS Organization.
 
-It provides: - Weekly curated Python packages packaged for **Lambda Layers** - centralized **S3 Distribution** across multiple AWS regions - **CloudFormation StackSets** with organization-wide SSM parameters.
+It provides: - Weekly curated Python Packages packaged for **Lambda Layers** - centralized **S3 Distribution** across multiple AWS regions - **CloudFormation StackSets** with organization-wide SSM parameters.
 
 ------------------------------------------------------------------------
 
@@ -10,19 +10,17 @@ It provides: - Weekly curated Python packages packaged for **Lambda Layers** - c
 
 ### Lambda Layer Package Distribution
 
-Python packages are **downloaded and packaged weekly** and published to Amazon S3 for use as **shared Lambda Layers** across the organization.
+Python Packages are **downloaded and packaged weekly** and published to Amazon S3 for use as **Lambda Layers** across the organization.
 
 **Schedule** - Every Sunday at **11:00 AM UTC**
 
 **Regions** - `us-east-1` - `us-east-2` - `us-west-2`
 
-These packages are intended to be referenced by Lambda functions without duplicating dependencies per account.
-
 ------------------------------------------------------------------------
 
 ## Included Python Packages
 
-The following Python packages are bundled for Lambda Layers:
+The following Python Packages are bundled for Lambda Layers:
 
 - beautifulsoup4
 - dnspython
@@ -56,6 +54,6 @@ Each deployment creates and updates SSM Parameters containing:
 - AWS Organization ID
 - Account Numbers
 
-These parameters are consumed by Lambda functions and other infrastructure components to dynamically adapt to the organization structure.
+These parameters are used by Lambda Functions and infrastructure components to dynamically reflect the organization structure and streamline IAM configuration.
 
 ------------------------------------------------------------------------
