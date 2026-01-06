@@ -10,7 +10,6 @@ def handler(event, context):
     packages.append('beautifulsoup4')
     packages.append('dnspython')
     packages.append('geoip2')
-    packages.append('ip2Location')
     packages.append('maxminddb')
     packages.append('netaddr')
     packages.append('pip')
