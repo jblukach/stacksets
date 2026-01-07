@@ -25,7 +25,6 @@ The following Python Packages are bundled for Lambda Layers:
 - beautifulsoup4
 - dnspython
 - geoip2
-- ip2Location
 - maxminddb
 - netaddr
 - pip
