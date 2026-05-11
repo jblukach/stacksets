@@ -14,6 +14,7 @@ def handler(event, context):
     packages.append('netaddr')
     packages.append('pip')
     packages.append('requests')
+    packages.append('s3fs')
     packages.append('smartopen')
     packages.append('whoisit')
 
