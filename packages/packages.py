@@ -9,7 +9,9 @@ def handler(event, context):
     packages = []
     packages.append('beautifulsoup4')
     packages.append('dnspython')
+    packages.append('fastmcp')
     packages.append('geoip2')
+    packages.append('mangum')
     packages.append('maxminddb')
     packages.append('netaddr')
     packages.append('pip')
