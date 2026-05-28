@@ -1,10 +1,16 @@
 import boto3
 import json
 import os
-import pip
+import shutil
+import subprocess
 import zipfile
 
 def handler(event, context):
+
+    # Include common Lambda layer binary locations so layer-provided CLIs are discoverable.
+    os.environ['PATH'] = '/opt/bin:/opt/python/bin:' + os.environ.get('PATH', '')
+    os.environ['UV_CACHE_DIR'] = '/tmp/uv-cache'
+    os.environ['UV_PYTHON_DOWNLOADS'] = 'never'
 
     packages = []
     packages.append('beautifulsoup4')
@@ -14,20 +20,52 @@ def handler(event, context):
     packages.append('mangum')
     packages.append('maxminddb')
     packages.append('netaddr')
-    packages.append('pip')
     packages.append('requests')
     packages.append('smartopen')
+    packages.append('uv')
     packages.append('whoisit')
+
+    uv_executable = shutil.which('uv')
+    if not uv_executable:
+        raise RuntimeError('uv binary not found in Lambda layer. Expected in /opt/bin or /opt/python/bin.')
+
+    print('uv executable: '+uv_executable)
+    uv_version = subprocess.run([uv_executable, '--version'], check=True, capture_output=True, text=True)
+    print('uv version: '+uv_version.stdout.strip())
 
     for package in packages:
         
         print('package: '+package)
         
         os.system('mkdir -p /tmp/'+package+'/python')
+        install_target = '/tmp/'+package+'/python/'
+
         if package == 'smartopen':
-            os.system('pip install --target=/tmp/'+package+'/python/ smart_open[s3]')
+            install_package = 'smart_open[s3]'
         else:
-            os.system('pip install --target=/tmp/'+package+'/python/ '+package)
+            install_package = package
+
+        print('installer: uv (package: '+install_package+')')
+        command = [
+            uv_executable,
+            'pip',
+            'install',
+            '--python',
+            '/var/lang/bin/python3.13',
+            '--target',
+            install_target,
+            install_package
+        ]
+
+        try:
+            subprocess.run(command, check=True, capture_output=True, text=True)
+        except subprocess.CalledProcessError as err:
+            print('uv command failed: '+' '.join(command))
+            if err.stdout:
+                print('uv stdout:\n'+err.stdout)
+            if err.stderr:
+                print('uv stderr:\n'+err.stderr)
+            raise
 
         with zipfile.ZipFile('/tmp/'+package+'.zip', 'w') as zipf:
             for root, dirs, files in os.walk('/tmp/'+package+'/python/'):

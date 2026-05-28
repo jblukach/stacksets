@@ -43,13 +43,13 @@ class StacksetsPackages(Stack):
     
     ### LAMBDA LAYER ###
 
-        pip = _lambda.LayerVersion(
-            self, 'pip',
-            layer_version_name = 'pip',
+        uv = _lambda.LayerVersion(
+            self, 'uv',
+            layer_version_name = 'uv',
             description = str(year)+'-'+str(month)+'-'+str(day)+' deployment',
             code = _lambda.Code.from_bucket(
                 bucket = use2bucket,
-                key = 'pip.zip'
+                key = 'uv.zip'
             ),
             compatible_architectures = [
                 _lambda.Architecture.ARM_64
@@ -106,7 +106,7 @@ class StacksetsPackages(Stack):
             memory_size = 2048,
             role = role,
             layers = [
-                pip
+                uv
             ]
         )
 
