@@ -21,7 +21,6 @@ def handler(event, context):
     packages.append('maxminddb')
     packages.append('momento')
     packages.append('netaddr')
-    packages.append('pymupdf4llm')
     packages.append('requests')
     packages.append('smartopen')
     packages.append('uv')
